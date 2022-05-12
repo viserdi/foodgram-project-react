@@ -23,7 +23,7 @@ class Tag(models.Model):
         verbose_name_plural = 'Тэги'
 
     def __str__(self):
-        return self.title[:15]
+        return self.name[:15]
 
 
 class Ingredient(models.Model):
@@ -49,6 +49,7 @@ class Recipe(models.Model):
         User,
         verbose_name='автор',
         on_delete=models.CASCADE,
+        related_name='recipe_author'
     )
     name = models.CharField(
         'Название',
@@ -101,11 +102,13 @@ class RecipeIngredient(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         verbose_name='Рецепт',
+        related_name='recipe_ingredient'
     )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
-        verbose_name='Ингредиент'
+        verbose_name='Ингредиент',
+        related_name='recipe_ingredient',
     )
     amount = models.PositiveIntegerField(
         verbose_name='Количество',
@@ -118,8 +121,9 @@ class Shoppingcart(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Автор списка',
     )
-    recipes = models.ManyToManyField(
+    recipe = models.ForeignKey(
         Recipe,
+        on_delete=models.CASCADE,
         verbose_name='Рецепты',
     )
 
@@ -128,7 +132,7 @@ class Shoppingcart(models.Model):
         verbose_name_plural = 'Списки покупок'
 
     def __str__(self):
-        return self.user.username
+        return f'{self.user.username} -> {self.recipe.name}'
 
 
 class Favorite(models.Model):

@@ -49,6 +49,6 @@ class FavoriteAdmin(admin.ModelAdmin):
 
 @admin.register(Shoppingcart)
 class ShoppingcartAdmin(admin.ModelAdmin):
-    list_display = ('user', )
+    list_display = ('user', 'recipe')
     search_fields = ('user',)
     empty_value_display = s.IT_IS_EMPTY
