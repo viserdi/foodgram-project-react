@@ -61,6 +61,7 @@ class Recipe(models.Model):
         Ingredient,
         through='RecipeIngredient',
         verbose_name='Ингредиенты',
+        related_name='recipes',
     )
     tags = models.ManyToManyField(
         Tag,
@@ -112,6 +113,7 @@ class RecipeIngredient(models.Model):
     )
     amount = models.PositiveIntegerField(
         verbose_name='Количество',
+        default=1,
     )
 
 
@@ -125,6 +127,7 @@ class Shoppingcart(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         verbose_name='Рецепты',
+        related_name='recipes'
     )
 
     class Meta:

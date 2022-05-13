@@ -7,14 +7,14 @@ from .models import (Favorite, Ingredient, Recipe, RecipeIngredient, RecipeTag,
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('name', 'color', 'slug')
+    list_display = ('id', 'name', 'color', 'slug')
     search_fields = ('name',)
     empty_value_display = s.IT_IS_EMPTY
 
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('name',  'measurement_unit')
+    list_display = ('id', 'name', 'measurement_unit')
     search_fields = ('name',)
     empty_value_display = s.IT_IS_EMPTY
 
@@ -33,7 +33,7 @@ class RecipeIngredientInLine(admin.TabularInline):
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (RecipeTagInLine, RecipeIngredientInLine,)
     list_display = (
-        'author', 'name', 'image', 'text',
+        'id', 'author', 'name', 'image', 'text',
         'cooking_time',
     )
     search_fields = ('name',)
@@ -42,13 +42,13 @@ class RecipeAdmin(admin.ModelAdmin):
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ('user',  'recipe')
+    list_display = ('id', 'user',  'recipe')
     search_fields = ('user',)
     empty_value_display = s.IT_IS_EMPTY
 
 
 @admin.register(Shoppingcart)
 class ShoppingcartAdmin(admin.ModelAdmin):
-    list_display = ('user', 'recipe')
+    list_display = ('id', 'user', 'recipe')
     search_fields = ('user',)
     empty_value_display = s.IT_IS_EMPTY
