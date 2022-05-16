@@ -34,7 +34,7 @@ urlpatterns = [
     ),
     path(
         'recipes/download_shopping_cart/',
-        DownloadShoppingCartViewSet.as_view,
+        DownloadShoppingCartViewSet.as_view(),
         name='download'
     ),
     path('', include('djoser.urls')),

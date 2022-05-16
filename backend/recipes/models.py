@@ -11,7 +11,7 @@ class Tag(models.Model):
     )
     color = models.CharField(
         'Цвет',
-        max_length=10,
+        max_length=7,
         unique=True,
     )
     slug = models.SlugField(
@@ -127,7 +127,7 @@ class Shoppingcart(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         verbose_name='Рецепты',
-        related_name='recipes'
+        related_name='cartrecipe'
     )
 
     class Meta:
@@ -148,6 +148,7 @@ class Favorite(models.Model):
         Recipe,
         verbose_name='Рецепт',
         on_delete=models.DO_NOTHING,
+        related_name='favoriterecipe'
     )
 
     class Meta:
