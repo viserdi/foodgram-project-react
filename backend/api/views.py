@@ -8,6 +8,7 @@ from rest_framework import filters, permissions, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .permissions import IsAuthorOrReadOnly
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             Shoppingcart, Tag)
 from users.models import Subscribe, User
@@ -28,12 +29,12 @@ class IngredientViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny, )
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     search_fields = ('^name',)
-    http_method_names = ['get']
+    http_method_names = ('get',)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (IsAuthorOrReadOnly,)
     filter_class = RecipeFilter
     filter_backends = (DjangoFilterBackend, )
     pagination_class = PageWithLimitPagination
@@ -137,7 +138,13 @@ class CartViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         recipe_id = self.kwargs.get('recipe_id')
         recipe = get_object_or_404(Recipe, id=recipe_id)
-        Shoppingcart.objects.create(user=self.request.user, recipe=recipe)
+        try:
+            Shoppingcart.objects.create(user=self.request.user, recipe=recipe)
+        except IntegrityError:
+            return Response(
+                'Этот рецепт уже в списке покупок',
+                status=HTTPStatus.BAD_REQUEST
+            )
         serializer = RecipeCartSerializer(recipe, many=False)
         return Response(data=serializer.data, status=HTTPStatus.CREATED)
 
@@ -154,6 +161,7 @@ class CartViewSet(viewsets.ModelViewSet):
 
 class DownloadShoppingCartViewSet(APIView):
     permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ('get', )
 
     def get(self, request):
         user = request.user
@@ -178,7 +186,6 @@ class DownloadShoppingCartViewSet(APIView):
                 name=item
             ).measurement_unit
             content += f'{item} -- {cart_dict[item]} {measurement_unit}\n'
-        print(content)
         response = HttpResponse(
             content, content_type='text/plain,charset=utf8'
         )
