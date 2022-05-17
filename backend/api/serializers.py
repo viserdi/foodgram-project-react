@@ -1,8 +1,7 @@
 from django.contrib.auth.hashers import make_password
-from rest_framework import serializers
-
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             RecipeTag, Shoppingcart, Tag)
+from rest_framework import serializers
 from users.models import Subscribe, User
 
 
@@ -150,7 +149,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
                 self.context.get('request').query_params['recipes_limit']
             )
             recipes = Recipe.objects.filter(author=obj.author)[:recipes_limit]
-        except:
+        except Exception:
             recipes = Recipe.objects.filter(author=obj.author)
         serializer = RecipeShortSerializer(recipes, many=True,)
         return serializer.data
