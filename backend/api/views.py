@@ -4,14 +4,17 @@ from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
-                            Shoppingcart, Tag)
-from rest_framework import filters, permissions, viewsets
+from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                            Shoppingcart, Tag)
 from users.models import Subscribe, User
 
-from .filters import RecipeFilter
+from .customixins import (CreateDestroyViewSet, CreateListDestroyViewSet,
+                          ListRetriveViewSet)
+from .filters import IngredientFilter, RecipeFilter
 from .pagination import PageWithLimitPagination
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (CartSerializer, FavoriteSerializer,
@@ -21,14 +24,13 @@ from .serializers import (CartSerializer, FavoriteSerializer,
                           TagSerializer, UserSerializer)
 
 
-class IngredientViewSet(viewsets.ModelViewSet):
+class IngredientViewSet(ListRetriveViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None
     permission_classes = (permissions.AllowAny, )
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    filter_backends = (DjangoFilterBackend, IngredientFilter)
     search_fields = ('^name',)
-    http_method_names = ('get',)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -48,19 +50,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-class TagViewSet(viewsets.ModelViewSet):
+class TagViewSet(ListRetriveViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     pagination_class = None
     permission_classes = (permissions.AllowAny, )
-    http_method_names = ('get',)
 
 
-class FavoriteViewSet(viewsets.ModelViewSet):
+class FavoriteViewSet(CreateDestroyViewSet):
     queryset = Favorite.objects.all()
     serializer_class = FavoriteSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    http_method_names = ('post', 'delete')
 
     def create(self, request, *args, **kwargs):
         recipe_id = self.kwargs.get('recipe_id')
@@ -86,7 +86,7 @@ class UserViewSet(viewsets.ModelViewSet):
     pagination_class = PageWithLimitPagination
 
 
-class SubscribeViewSet(viewsets.ModelViewSet):
+class SubscribeViewSet(CreateListDestroyViewSet):
     serializer_class = SubscribeSerializer
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageWithLimitPagination
@@ -160,7 +160,6 @@ class CartViewSet(viewsets.ModelViewSet):
 
 class DownloadShoppingCartViewSet(APIView):
     permission_classes = (permissions.IsAuthenticated,)
-    http_method_names = ('get', )
 
     def get(self, request):
         user = request.user

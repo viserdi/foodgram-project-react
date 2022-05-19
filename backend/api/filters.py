@@ -1,4 +1,6 @@
 import django_filters
+from rest_framework import filters
+
 from recipes.models import Recipe
 
 
@@ -23,3 +25,7 @@ class RecipeFilter(django_filters.FilterSet):
         if self.request.user.is_authenticated and value:
             return queryset.filter(cartrecipe__user=self.request.user)
         return queryset.all()
+
+
+class IngredientFilter(filters.SearchFilter):
+    search_param = 'name'
