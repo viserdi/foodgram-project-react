@@ -131,8 +131,11 @@ class SubscribeViewSet(CreateListDestroyViewSet):
 
 class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartSerializer
-    queryset = Shoppingcart.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = Shoppingcart.objects.filter(user=self.request.user)
+        return queryset
 
     def create(self, request, *args, **kwargs):
         recipe_id = self.kwargs.get('recipe_id')
