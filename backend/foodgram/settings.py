@@ -76,6 +76,7 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT')
     }
 }
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -90,6 +91,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+DEFAULT_AUTO_FIELD='django.db.models.AutoField' 
 
 AUTH_USER_MODEL = 'users.User'
 
