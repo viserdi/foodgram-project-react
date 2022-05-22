@@ -58,9 +58,12 @@ class TagViewSet(ListRetriveViewSet):
 
 
 class FavoriteViewSet(CreateDestroyViewSet):
-    queryset = Favorite.objects.all()
     serializer_class = FavoriteSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = Favorite.objects.filter(user=self.request.user)
+        return queryset
 
     def create(self, request, *args, **kwargs):
         recipe_id = self.kwargs.get('recipe_id')
