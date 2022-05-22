@@ -100,7 +100,7 @@ class SubscribeViewSet(CreateListDestroyViewSet):
         author = get_object_or_404(User, id=author_id)
         if author == request.user:
             return Response(
-                'Нельзя полписаться на себя',
+                'Нельзя подписаться на себя',
                 status=HTTPStatus.BAD_REQUEST
             )
         try:
