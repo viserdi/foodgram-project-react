@@ -1,7 +1,7 @@
 import django_filters
 from rest_framework import filters
 
-from recipes.models import Recipe
+from recipes.models import Recipe, Shoppingcart, Favorite
 
 
 class RecipeFilter(django_filters.FilterSet):
@@ -16,11 +16,24 @@ class RecipeFilter(django_filters.FilterSet):
         model = Recipe
         fields = ('tags', 'author', 'is_favorited', 'is_in_shopping_cart')
 
-    def get_is_favorited(self, queryset, *args):
-        return queryset.favoriterecipe(self.request.user)
+    def get_is_favorited(self, queryset, name, value):
+        if not value:
+            return queryset
+        favorites = Favorite.objects.filter(user=self.request.user)
+        return queryset.filter(
+            pk__in=(favorite.recipe.pk for favorite in favorites)
+        )
 
-    def get_is_in_shopping_cart(self, queryset, *args):
-        return queryset.cartrecipe(self.request.user)
+    def get_is_in_shopping_cart(self, queryset, name, value):
+        if not value:
+            return queryset
+        try:
+            carts = Shoppingcart.objects.filter(user=self.request.user)
+        except Shoppingcart.DoesNotExist:
+            return queryset
+        return queryset.filter(
+            pk__in=(cart.recipe.pk for cart in carts)
+        )
 
 
 class IngredientFilter(filters.SearchFilter):
