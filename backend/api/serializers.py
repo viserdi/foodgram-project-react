@@ -179,7 +179,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return(
             Favorite.objects.filter(
                 user=request.user,
-                recipe__id=obj.id
+                recipe=obj
             ).exists()
             and request.user.is_authenticated
         )
@@ -189,7 +189,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return(
             Shoppingcart.objects.filter(
                 user=request.user,
-                recipe__id=obj.id
+                recipe=obj
             ).exists()
             and request.user.is_authenticated
         )
