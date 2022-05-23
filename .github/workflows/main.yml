@@ -37,15 +37,18 @@ jobs:
       - name: Push to Docker Hub Backend
         uses: docker/build-push-action@v2 
         with:
+          context: backend/
+          file: backend/Dockerfile
           push: true
           tags: viserdi/foodgram_back:latest
-          file: backend/Dockerfile
+          
       - name: Push to Docker Hub Frontend
         uses: docker/build-push-action@v2 
         with:
           push: true
+          file: frontend/Dockerfile
           tags: viserdi/foodgram_front:latest
-          file: frontend/Dockerfile 
+           
   
   deploy:
     runs-on: ubuntu-latest
