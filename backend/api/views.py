@@ -61,8 +61,7 @@ class FavoriteViewSet(CreateDestroyViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        queryset = Favorite.objects.filter(user=self.request.user)
-        return queryset
+        return Favorite.objects.filter(user=self.request.user)
 
     def create(self, request, *args, **kwargs):
         recipe_id = self.kwargs.get('recipe_id')
@@ -94,8 +93,7 @@ class SubscribeViewSet(CreateListDestroyViewSet):
     pagination_class = PageWithLimitPagination
 
     def get_queryset(self):
-        queryset = Subscribe.objects.filter(user=self.request.user)
-        return queryset
+        return Subscribe.objects.filter(user=self.request.user)
 
     def create(self, request, *args, **kwargs):
         author_id = self.kwargs.get('author_id')
@@ -136,8 +134,7 @@ class CartViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        queryset = Shoppingcart.objects.filter(user=self.request.user)
-        return queryset
+        return Shoppingcart.objects.filter(user=self.request.user)
 
     def create(self, request, *args, **kwargs):
         recipe_id = self.kwargs.get('recipe_id')

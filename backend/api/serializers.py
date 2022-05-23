@@ -34,9 +34,7 @@ class Base64ImageField(serializers.ImageField):
         import imghdr
 
         extension = imghdr.what(file_name, decoded_file)
-        extension = "jpg" if extension == "jpeg" else extension
-
-        return extension
+        return "jpg" if extension == "jpeg" else extension
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -272,8 +270,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
             text=text,
             cooking_time=cooking_time,
         )
-        recipe = self.add_tags_and_ingredients(tags, ingredients, recipe)
-        return recipe
+        return self.add_tags_and_ingredients(tags, ingredients, recipe)
 
     def update(self, instance, validated_data):
         tags = validated_data.pop('tags')

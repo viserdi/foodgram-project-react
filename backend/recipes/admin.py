@@ -42,7 +42,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user',  'recipe')
+    list_display = ('id', 'user', 'recipe')
     search_fields = ('user',)
     empty_value_display = s.IT_IS_EMPTY
 
