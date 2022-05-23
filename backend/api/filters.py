@@ -16,15 +16,11 @@ class RecipeFilter(django_filters.FilterSet):
         model = Recipe
         fields = ('tags', 'author', 'is_favorited', 'is_in_shopping_cart')
 
-    def get_is_favorited(self, queryset, name, value):
-        if self.request.user.is_authenticated and value:
-            return queryset.filter(favoriterecipe__user=self.request.user)
-        return queryset
+    def get_is_favorited(self, queryset, *args):
+        return queryset.favoriterecipe(self.request.user)
 
-    def get_is_in_shopping_cart(self, queryset, name, value):
-        if self.request.user.is_authenticated and value:
-            return queryset.filter(cartrecipe__user=self.request.user)
-        return queryset.all()
+    def get_is_in_shopping_cart(self, queryset, *args):
+        return queryset.cartrecipe(self.request.user)
 
 
 class IngredientFilter(filters.SearchFilter):
