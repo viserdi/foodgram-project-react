@@ -1,7 +1,6 @@
 import json
 
 from django.core.management.base import BaseCommand
-
 from recipes.models import Ingredient
 
 
@@ -20,4 +19,3 @@ class Command(BaseCommand):
                 name=name,
                 measurement_unit=measurement_unit
             )
-

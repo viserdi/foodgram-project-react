@@ -1,9 +1,8 @@
 from distutils.util import strtobool
 
 import django_filters
-from rest_framework import filters
-
 from recipes.models import Favorite, Recipe, Shoppingcart
+from rest_framework import filters
 
 CHOICES = (
     ('0', 'False'),
@@ -30,8 +29,8 @@ class RecipeFilter(django_filters.FilterSet):
         fields = ('tags', 'author', 'is_favorited', 'is_in_shopping_cart')
 
     def get_is_favorited(self, queryset, name, value):
-        if not value :
-            return queryset 
+        if not value:
+            return queryset
         favorites = Favorite.objects.filter(user=self.request.user)
         return queryset.filter(
             pk__in=(favorite.recipe.pk for favorite in favorites)

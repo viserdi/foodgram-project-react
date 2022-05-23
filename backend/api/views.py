@@ -4,12 +4,11 @@ from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                            Shoppingcart, Tag)
 from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
-                            Shoppingcart, Tag)
 from users.models import Subscribe, User
 
 from .customixins import (CreateDestroyViewSet, CreateListDestroyViewSet,
