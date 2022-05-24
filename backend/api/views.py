@@ -34,7 +34,7 @@ class IngredientViewSet(ListRetriveViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    permission_classes = (IsAuthorOrReadOnly,)
+    permission_classes = (permissions.AllowAny, )
     filter_class = RecipeFilter
     filter_backends = (DjangoFilterBackend, )
     pagination_class = PageWithLimitPagination
