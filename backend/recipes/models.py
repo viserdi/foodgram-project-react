@@ -11,10 +11,7 @@ class Tag(models.Model):
         max_length=50,
         unique=True,
     )
-    color = ColorField(
-        default='#FF0000',
-        unique=True,
-        )
+    color = ColorField()
     slug = models.SlugField(
         'Слаг',
         unique=True,
@@ -64,7 +61,6 @@ class Recipe(models.Model):
         verbose_name='Ингредиенты',
         related_name='recipes',
         blank=False,
-        null=False,
     )
     tags = models.ManyToManyField(
         Tag,
