@@ -59,13 +59,11 @@ class Recipe(models.Model):
         through='RecipeIngredient',
         verbose_name='Ингредиенты',
         related_name='recipes',
-        null=False,
     )
     tags = models.ManyToManyField(
         Tag,
         through='RecipeTag',
         verbose_name='тэги',
-        null=False,
     )
     cooking_time = models.IntegerField(
         verbose_name='Время приготовления',
@@ -74,6 +72,10 @@ class Recipe(models.Model):
     pub_date = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Дата создания',
+    )
+    REQUIRED_FIELDS = (
+        'author', 'name', 'image', 'text',
+        'ingredients', 'tags', 'cooking_time',
     )
 
     class Meta:
