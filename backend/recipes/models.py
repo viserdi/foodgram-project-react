@@ -1,7 +1,6 @@
 from colorfield.fields import ColorField
 from django.core.validators import MinValueValidator
 from django.db import models
-
 from users.models import User
 
 
@@ -114,6 +113,14 @@ class RecipeIngredient(models.Model):
         verbose_name='Количество',
         default=1,
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=('recipe', 'ingredient'),
+                name='recipe_ingredient_unique'
+            )
+        ]
 
 
 class Shoppingcart(models.Model):
