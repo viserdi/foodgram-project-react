@@ -1,12 +1,14 @@
 from http import HTTPStatus
 
 from django.db import IntegrityError
+from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from fpdf import FPDF
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             Shoppingcart, Tag)
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -164,36 +166,42 @@ class CartViewSet(viewsets.ModelViewSet):
 class DownloadShoppingCartViewSet(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
-    def get(self, request):
-        user = request.user
-        carts = Shoppingcart.objects.filter(user=user)
-        recipes = [cart.recipe for cart in carts]
-        cart_dict = {}
-        for recipe in recipes:
-            for ingredient in recipe.ingredients.all():
-                amount = get_object_or_404(
-                    RecipeIngredient,
-                    recipe=recipe,
-                    ingredient=ingredient
-                ).amount
-                if ingredient.name not in cart_dict:
-                    cart_dict[ingredient.name] = amount
-                else:
-                    cart_dict[ingredient.name] += amount
-        content = ''
-        for item in cart_dict:
-            measurement_unit = get_object_or_404(
-                Ingredient,
-                name=item
-            ).measurement_unit
-            content += f'{item} -- {cart_dict[item]} {measurement_unit}\n'
-        pdf = FPDF()
-        pdf.add_page()
-        pdf.set_font("Arial", size=12)
-        pdf.cell(200, 10, txt="Welcome to Python!", ln=1, align="C")
-        pdf.output("cart.pdf")
-        response = HttpResponse(
-            content_type='application/pdf'
+    @staticmethod
+    def canvas_method(dictionary):
+        response = HttpResponse(content_type='application/pdf')
+        response[
+            'Content-Disposition'] = 'attachment; \
+        filename = "cart.pdf"'
+        begin_position_x, begin_position_y = 40, 650
+        sheet = canvas.Canvas(response, pagesize=A4)
+        sheet.setFont('Arial', 50)
+        sheet.setTitle('Список покупок')
+        sheet.drawString(
+            begin_position_x,
+            begin_position_y + 40,
+            'Список покупок: '
         )
-        response['Content-Disposition'] = 'attachment; filename="cart.pdf"'
+        sheet.setFont('Arial', 24)
+        for number, item in enumerate(dictionary, start=1):
+            if begin_position_y < 100:
+                begin_position_y = 700
+                sheet.showPage()
+                sheet.setFont('Arial', 24)
+            sheet.drawString(
+                begin_position_x,
+                begin_position_y,
+                f'{number}.  {item["ingredient__name"]} - '
+                f'{item["ingredient_total"]}'
+                f' {item["ingredient__measurement_unit"]}'
+            )
+            begin_position_y -= 30
+        sheet.showPage()
+        sheet.save()
         return response
+
+    def get(self, request):
+        result = RecipeIngredient.objects.filter(
+            recipe__carts__user=request.user).values(
+            'ingredient__name', 'ingredient__measurement_unit').order_by(
+                'ingredient__name').annotate(ingredient_total=Sum('amount'))
+        return self.canvas_method(result)
