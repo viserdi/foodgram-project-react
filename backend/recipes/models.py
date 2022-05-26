@@ -1,4 +1,4 @@
-from colorfield.fields import ColorField
+# from colorfield.fields import ColorField
 from django.core.validators import MinValueValidator
 from django.db import models
 from users.models import User
@@ -10,7 +10,9 @@ class Tag(models.Model):
         max_length=50,
         unique=True,
     )
-    color = ColorField()
+    color = models.CharField(
+        max_length=7,
+    )
     slug = models.SlugField(
         'Слаг',
         unique=True,
@@ -73,10 +75,6 @@ class Recipe(models.Model):
         auto_now_add=True,
         verbose_name='Дата создания',
     )
-    REQUIRED_FIELDS = (
-        'author', 'name', 'image', 'text',
-        'ingredients', 'tags', 'cooking_time',
-    )
 
     class Meta:
         verbose_name_plural = 'Рецепты'
@@ -112,9 +110,10 @@ class RecipeIngredient(models.Model):
         verbose_name='Ингредиент',
         related_name='recipe_ingredient',
     )
-    amount = models.PositiveIntegerField(
+    amount = models.IntegerField(
         verbose_name='Количество',
         default=1,
+        validators=[MinValueValidator(1)],
     )
 
     class Meta:

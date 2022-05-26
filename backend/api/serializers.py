@@ -240,6 +240,24 @@ class RecipePostSerializer(serializers.ModelSerializer):
             and request.user.is_authenticated
         )
 
+    def validate_ingredients(self, value):
+        ingredients_list = []
+        ingredients = value
+        for ingredient in ingredients:
+            if ingredient['amount'] < 1:
+                raise serializers.ValidationError(
+                    'Количество должно быть равным или больше 1!')
+            check_id = ingredient['ingredient']['id']
+            check_ingredient = Ingredient.objects.filter(id=check_id)
+            if not check_ingredient.exists():
+                raise serializers.ValidationError(
+                    'Ингредиента нет в базе!')
+            if check_ingredient in ingredients_list:
+                raise serializers.ValidationError(
+                    'Продукты не должны повторяться!')
+            ingredients_list.append(check_ingredient)
+        return value
+
     def add_tags_and_ingredients(self, tags, ingredients, recipe):
         for tag in tags:
             recipe.tags.add(tag)
