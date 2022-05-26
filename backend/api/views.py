@@ -8,6 +8,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             Shoppingcart, Tag)
 from reportlab.lib.pagesizes import A4
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from rest_framework import permissions, viewsets
 from rest_framework.response import Response
@@ -172,19 +174,22 @@ class DownloadShoppingCartViewSet(APIView):
         response['Content-Disposition'] = 'attachment; filename = "cart.pdf"'
         begin_position_x, begin_position_y = 40, 650
         sheet = canvas.Canvas(response, pagesize=A4)
-        sheet.setFont('Helvetica', 50)
+        pdfmetrics.registerFont(
+            TTFont('FreeSans', 'data/FreeSans.ttf')
+        )
+        sheet.setFont('FreeSans', 36)
         sheet.setTitle('Список покупок')
         sheet.drawString(
             begin_position_x,
             begin_position_y + 40,
             'Список покупок: '
         )
-        sheet.setFont('Helvetica', 24)
+        sheet.setFont('FreeSans', 20)
         for number, item in enumerate(dictionary, start=1):
             if begin_position_y < 100:
                 begin_position_y = 700
                 sheet.showPage()
-                sheet.setFont('Helvetica', 24)
+                sheet.setFont('FreeSans', 20)
             sheet.drawString(
                 begin_position_x,
                 begin_position_y,
