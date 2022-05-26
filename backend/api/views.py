@@ -169,9 +169,7 @@ class DownloadShoppingCartViewSet(APIView):
     @staticmethod
     def canvas_method(dictionary):
         response = HttpResponse(content_type='application/pdf')
-        response[
-            'Content-Disposition'] = 'attachment; \
-        filename = "cart.pdf"'
+        response['Content-Disposition'] = 'attachment; filename = "cart.pdf"'
         begin_position_x, begin_position_y = 40, 650
         sheet = canvas.Canvas(response, pagesize=A4)
         sheet.setFont('Arial', 50)
