@@ -172,19 +172,19 @@ class DownloadShoppingCartViewSet(APIView):
         response['Content-Disposition'] = 'attachment; filename = "cart.pdf"'
         begin_position_x, begin_position_y = 40, 650
         sheet = canvas.Canvas(response, pagesize=A4)
-        sheet.setFont('Arial', 50)
+        sheet.setFont('Helvetica', 50)
         sheet.setTitle('Список покупок')
         sheet.drawString(
             begin_position_x,
             begin_position_y + 40,
             'Список покупок: '
         )
-        sheet.setFont('Arial', 24)
+        sheet.setFont('Helvetica', 24)
         for number, item in enumerate(dictionary, start=1):
             if begin_position_y < 100:
                 begin_position_y = 700
                 sheet.showPage()
-                sheet.setFont('Arial', 24)
+                sheet.setFont('Helvetica', 24)
             sheet.drawString(
                 begin_position_x,
                 begin_position_y,
@@ -199,7 +199,7 @@ class DownloadShoppingCartViewSet(APIView):
 
     def get(self, request):
         result = RecipeIngredient.objects.filter(
-            recipe__carts__user=request.user).values(
+            recipe__cartrecipe__user=request.user).values(
             'ingredient__name', 'ingredient__measurement_unit').order_by(
                 'ingredient__name').annotate(ingredient_total=Sum('amount'))
         return self.canvas_method(result)
