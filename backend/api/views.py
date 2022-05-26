@@ -187,13 +187,13 @@ class DownloadShoppingCartViewSet(APIView):
                 name=item
             ).measurement_unit
             content += f'{item} -- {cart_dict[item]} {measurement_unit}\n'
-        response = HttpResponse(
-            content_type='application/pdf'
-        )
-        response['Content-Disposition'] = 'attachment; filename="cart.pdf"'
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", size=12)
         pdf.cell(200, 10, txt="Welcome to Python!", ln=1, align="C")
         pdf.output("cart.pdf")
+        response = HttpResponse(
+            content_type='application/pdf'
+        )
+        response['Content-Disposition'] = 'attachment; filename="cart.pdf"'
         return response
