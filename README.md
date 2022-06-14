@@ -3,18 +3,20 @@
 # Проект Foodgram
 
 ## Сервер
-
+```
 51.250.98.77
-
+```
+```
 тестовые пользователи:
 админ: 
 email: test@admin.com
 password: iam$uper 
-
+```
+```
 Простой пользователь:
 email: mak.veles78@mail.ru
 password: makariychumakov.veles
-
+```
 
 ## Описание
 
@@ -77,15 +79,13 @@ Cайт Foodgram - онлайн-сервис, на котором пользов
 ```
 SECRET_KEY=2435ghj!@ihbon234jbnkm # Ваш секртеный ключ
 ALLOWED_HOSTS= 127.0.0.1 localhost backend 11.111.111.111 # список разрешенных хостов
-```
-```
 DB_ENGINE=django.db.backends.postgresql # указываем, что работаем с postgresql
-```
 DB_NAME=postgres # имя базы данных
 POSTGRES_USER=postgres # логин для подключения к базе данных
 POSTGRES_PASSWORD=postgres # пароль для подключения к БД (установите свой)
 DB_HOST=db # название сервиса (контейнера)
 DB_PORT=5432 # порт для подключения к БД 
+```
 
 
 ## Создание образа
