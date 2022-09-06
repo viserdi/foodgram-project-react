@@ -2,21 +2,6 @@
 
 # Проект Foodgram
 
-## Сервер
-```
-51.250.98.77
-```
-```
-тестовые пользователи:
-админ: 
-email: test@admin.com
-password: iam$uper 
-```
-```
-Простой пользователь:
-email: mak.veles78@mail.ru
-password: makariychumakov.veles
-```
 
 ## Описание
 
