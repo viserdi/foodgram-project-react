@@ -1,4 +1,4 @@
-![Foodgram](https://github.com/viserdi/foodgram-project-react/actions/workflows/main.yml/badge.svg)
+
 
 # Проект Foodgram
 
